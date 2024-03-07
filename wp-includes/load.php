@@ -410,13 +410,13 @@ function wp_is_maintenance_mode() {
 	global $upgrading;
 
 	// Do not enable maintenance mode while scraping for fatal errors.
-	if ( isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] )
-		&& is_string( $_REQUEST['wp_scrape_key'] )
-		&& is_string( $_REQUEST['wp_scrape_nonce'] )
-	) {
-		$key = stripslashes( $_REQUEST['wp_scrape_key'] );
+	if ( isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] ) ) {
+		// Ensure following functions exist.
+		require_once ABSPATH . WPINC . 'formatting.php';
+		$key   = substr( sanitize_key( wp_unslash( $_REQUEST['wp_scrape_key'] ) ), 0, 32 );
+		$nonce = wp_unslash( $_REQUEST['wp_scrape_nonce'] );
 
-		if ( strlen( $key ) === 32 && get_transient( 'scrape_key_' . $key ) === $_REQUEST['wp_scrape_nonce'] ) {
+		if ( get_transient( 'scrape_key_' . $key ) === $nonce ) {
 			return false;
 		}
 	}
