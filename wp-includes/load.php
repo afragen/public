@@ -411,6 +411,9 @@ function wp_is_maintenance_mode() {
 
 	// Do not enable maintenance mode while scraping for fatal errors.
 	if ( isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] ) ) {
+		if ( ! function_exists( 'sanitize_key' ) ) {
+			require_once ABSPATH . WPINC . 'formatting.php';
+		}
 		$key   = substr( sanitize_key( wp_unslash( $_REQUEST['wp_scrape_key'] ) ), 0, 32 );
 		$nonce = wp_unslash( $_REQUEST['wp_scrape_nonce'] );
 
