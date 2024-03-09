@@ -985,7 +985,6 @@ class WP_Upgrader {
 	public function maintenance_mode( $enable = false ) {
 		global $wp_filesystem;
 
-
 		if ( ! $wp_filesystem ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			WP_Filesystem();
@@ -993,7 +992,6 @@ class WP_Upgrader {
 
 		$file = $wp_filesystem->abspath() . '.maintenance';
 		if ( $enable ) {
-			$this->skin->feedback( 'maintenance_start' );
 			if ( ! wp_doing_cron() ) {
 				$this->skin->feedback( 'maintenance_start' );
 			}
@@ -1146,7 +1144,7 @@ class WP_Upgrader {
 	 * Restores the plugin or theme from temporary backup.
 	 *
 	 * @since 6.3.0
-	 * @since 6.5.0 Added the `$temp_backups` parameter.
+	 * @since 6.6.0 Added the `$temp_backups` parameter.
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
 	 *
@@ -1211,10 +1209,7 @@ class WP_Upgrader {
 	 * Deletes a temporary backup.
 	 *
 	 * @since 6.3.0
-	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
-	 *
-	 * @since 6.5.0 Added the `$temp_backups` parameter.
+	 * @since 6.6.0 Added the `$temp_backups` parameter.
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
 	 *

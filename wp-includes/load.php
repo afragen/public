@@ -409,24 +409,6 @@ function wp_maintenance() {
 function wp_is_maintenance_mode() {
 	global $upgrading;
 
-	// Do not enable maintenance mode while scraping for fatal errors.
-	if ( isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] ) ) {
-		if (
-			! is_string( $_REQUEST['wp_scrape_key'] )
-			|| ! is_string( $_REQUEST['wp_scrape_nonce'] )
-			|| 32 !== strlen( $_REQUEST['wp_scrape_key'] )
-			|| preg_match( '/[^a-f0-9]/', $_REQUEST['wp_scrape_key'] )
-			|| preg_match( '/[^0-9]/', $_REQUEST['wp_scrape_nonce'] )
-		) {
-			wp_trigger_error(
-				__FUNCTION__,
-				__( 'Error scraping was requested with invalid input.' ),
-			);
-		} elseif ( get_transient( 'scrape_key_' . $_REQUEST['wp_scrape_key'] ) === $_REQUEST['wp_scrape_nonce'] ) {
-			return false;
-		}
-	}
-
 	if ( ! file_exists( ABSPATH . '.maintenance' ) || wp_installing() ) {
 		return false;
 	}
@@ -436,6 +418,16 @@ function wp_is_maintenance_mode() {
 	// If the $upgrading timestamp is older than 10 minutes, consider maintenance over.
 	if ( ( time() - $upgrading ) >= 10 * MINUTE_IN_SECONDS ) {
 		return false;
+	}
+
+	// Don't enable maintenance mode while scraping for fatal errors.
+	if ( is_int( $upgrading ) && isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] ) ) {
+		$key   = wp_unslash( $_REQUEST['wp_scrape_key'] );
+		$nonce = wp_unslash( $_REQUEST['wp_scrape_nonce'] );
+
+		if ( md5( $upgrading ) === $key && (int) $nonce === $upgrading ) {
+			return false;
+		}
 	}
 
 	/**
