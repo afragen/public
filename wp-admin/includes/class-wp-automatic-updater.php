@@ -1748,6 +1748,8 @@ Thanks! -- The WordPress Team"
 			$result       = json_decode( trim( $error_output ), true );
 		}
 
+		delete_transient( $transient );
+
 		// Only fatal errors will result in a 'type' key.
 		return isset( $result['type'] );
 	}
