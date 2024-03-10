@@ -1698,7 +1698,7 @@ Thanks! -- The WordPress Team"
 			return false;
 		}
 
-		require_once $maintenance_file;
+		require $maintenance_file;
 		if ( ! is_int( $upgrading ) ) {
 			return false;
 		}
