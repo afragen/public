@@ -1736,9 +1736,16 @@ Thanks! -- The WordPress Team"
 		$response     = wp_remote_get( $url, compact( 'cookies', 'headers', 'timeout', 'sslverify' ) );
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Loopback is having a problem and any auto-updates will be rollback for safety.' );
-
-			return true;
+			$response = (array) $response;
+			$response['body'][] = $needle_start;
+			$response['body'][] = json_encode(
+				array(
+					'type'    => '1',
+					'message' => 'Loopback is having a problem and any auto-updates will be rollback for safety.',
+				)
+			);
+			$response['body'][] = $needle_end;
+			$response['body']   = implode( "\n", $response['body'] );
 		}
 
 		// If this outputs `true` in the log, it means there were no fatal errors detected.
