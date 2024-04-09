@@ -1735,6 +1735,12 @@ Thanks! -- The WordPress Team"
 		$url          = add_query_arg( $scrape_params, home_url( '/' ) );
 		$response     = wp_remote_get( $url, compact( 'cookies', 'headers', 'timeout', 'sslverify' ) );
 
+		if ( is_wp_error( $response ) ) {
+			error_log( 'Loopback is having a problem and any auto-updates will be rollback for safety.' );
+
+			return true;
+		}
+
 		// If this outputs `true` in the log, it means there were no fatal errors detected.
 		error_log( var_export( substr( $response['body'], strpos( $response['body'], '###### wp_scraping_result_start:' ) ), true ) );
 
