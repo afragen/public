@@ -541,7 +541,7 @@ class WP_Automatic_Updater {
 				}
 
 				// Avoid a race condition when there are 2 sequential plugins that have fatal errors.
-				sleep( 2 );
+				// sleep( 2 );
 
 				if ( $this->has_fatal_error() ) {
 					$upgrade_result = new WP_Error();
